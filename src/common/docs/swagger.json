@@ -1,0 +1,890 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "Schedule API",
+        "version": "1.0.0",
+        "description": "Lập lịch điểm danh cho công ty! 💦 <br> Xem ảnh của người dùng: <strong>domain-name/static/files/image-name</strong>. Ví dụ: <a href='http://localhost:5555/static/files/avatar.jpg'>nhukhanh.dev/static/files/image.jpg</a>. Lưu ý: <strong>image.jpg</strong> là ảnh người người dùng có trường là <strong>avatar</strong> ^^ "
+    },
+    "produces": [
+        "application/json"
+    ],
+    "securityDefinitions": {
+        "Bearer": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
+    },
+    "tags": [
+        {
+            "name": "Auth",
+            "description": "Authentication"
+        },
+        {
+            "name": "Verify",
+            "description": "Verification"
+        },
+        {
+            "name": "Profile",
+            "description": "Profile"
+        },
+        {
+            "name": "Room",
+            "description": "Room"
+        },
+        {
+            "name": "Attendance",
+            "description": "Attendance"
+        },
+        {
+            "name": "Statistic",
+            "description": "Statistic"
+        }
+    ],
+    "paths": {
+        "/auth/register": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Đăng ký tài khoản",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "Cần điền đầy đủ thông tin!",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Register"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Chúng tôi đã gửi một thông báo đến Email của bạn. Hãy kiểm tra chúng ngay bây giờ!"
+                    },
+                    "400": {
+                        "description": "Đâu vào không hợp lệ!"
+                    },
+                    "409": {
+                        "description": "Có vẻ như trước đây Email này đã được đăng ký. Vui lòng sử dụng một Email khác!"
+                    }
+                }
+            }
+        },
+        "/auth/login": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Đăng nhập",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "Cần điền đầy đủ thông tin!",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Login"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Bạn đã đăng nhập thành công!"
+                    },
+                    "400": {
+                        "description": "<b>Email này chưa từng đăng ký trước đây hoặc chưa được xác thực!</b><br><b>Mật khẩu này không hợp lệ!</b>"
+                    }
+                }
+            }
+        },
+        "/auth/refresh": {
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Làm mới mã truy cập của người dùng",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "Refresh token",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/RefreshToken"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Bạn đã đăng nhập thành công!"
+                    },
+                    "400": {
+                        "description": "Đầu vào không hợp lệ"
+                    }
+                }
+            }
+        },
+        "/verify/": {
+            "get": {
+                "tags": [
+                    "Verify"
+                ],
+                "summary": "Quên mật khẩu | Yêu cầu gửi mail",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "email",
+                        "required": true,
+                        "type": "string",
+                        "description": "Email của người dùng"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Chúng tôi đã gửi một thông báo đến Email của bạn. Hãy kiểm tra chúng ngay bây giờ!"
+                    },
+                    "404": {
+                        "description": "Chúng tôi không tìm thấy Email nào như này. Có vẻ như bạn chưa đăng ký!"
+                    },
+                    "429": {
+                        "description": "Quá nhiều yêu cầu, hãy thử lại sau 5 phút!"
+                    }
+                }
+            }
+        },
+        "/verify/{code}": {
+            "get": {
+                "summary": "Xác minh mã",
+                "tags": [
+                    "Verify"
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "code",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Bạn đã đăng nhập thành công!"
+                    },
+                    "404": {
+                        "description": "<b>Mã chưa được xác minh</b><br><b>Hoặc mã đã hết hạn!</b>"
+                    }
+                }
+            }
+        },
+        "/profile": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "tags": [
+                    "Profile"
+                ],
+                "summary": "Lấy hồ sơ của người dùng hiện tại",
+                "responses": {
+                    "200": {
+                        "description": "Đây là thông tin tài khoản của bạn!"
+                    },
+                    "401": {
+                        "description": "Không được phép"
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "tags": [
+                    "Profile"
+                ],
+                "summary": "Xoá tài khoản người dùng",
+                "responses": {
+                    "200": {
+                        "description": "Tài khoản đã được xóa thành công!!!"
+                    },
+                    "401": {
+                        "description": "Không được phép"
+                    }
+                }
+            }
+        },
+        "/profile/edit": {
+            "patch": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "tags": [
+                    "Profile"
+                ],
+                "summary": "Cập nhật thông tin người dùng hiện tại",
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "firstname",
+                        "type": "string",
+                        "description": "Tên của người dùng"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "lastname",
+                        "type": "string",
+                        "description": "Họ của người dùng"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "email",
+                        "type": "string",
+                        "description": "Email của người dùng"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "avatar",
+                        "type": "file",
+                        "description": "Ảnh của người dùng"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "password",
+                        "type": "string",
+                        "description": "Mật khẩu của người dùng"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Thông tin của bạn đã được cập nhật"
+                    },
+                    "400": {
+                        "description": "Đầu vào không hợp lệ"
+                    },
+                    "401": {
+                        "description": "Không được phép"
+                    }
+                }
+            }
+        },
+        "/room/paginate": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "tags": [
+                    "Room"
+                ],
+                "summary": "Phân trang | Chỉ hiển thị các phòng mà bạn đã tham gia",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "page",
+                        "required": false,
+                        "type": "integer",
+                        "description": "Số trang để truy xuất (Mặc định: 1)"
+                    },
+                    {
+                        "in": "query",
+                        "name": "limit",
+                        "required": false,
+                        "type": "integer",
+                        "description": "Giới hạn item mỗi trang (Mặc định: 20)"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Thành công!"
+                    },
+                    "401": {
+                        "description": "Không được phép"
+                    }
+                }
+            }
+        },
+        "/room/{roomId}": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "tags": [
+                    "Room"
+                ],
+                "summary": "Tìm một phòng bất kỳ với ID của nó",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "roomId",
+                        "required": true,
+                        "type": "string",
+                        "description": "Nhập ID của phòng cần tìm"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Thành công!"
+                    },
+                    "400": {
+                        "description": "Bạn không có quyền để tra cứu, hay thực hiện bất kì hành động nào khác của nhóm này!"
+                    },
+                    "401": {
+                        "description": "Không được phép"
+                    }
+                }
+            }
+        },
+        "/room/create": {
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "tags": [
+                    "Room"
+                ],
+                "summary": "Tạo một phòng mới",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "Nếu bạn không nhập trường <b>ipAddress</b>, nó sẽ tự động lấy địa chỉ IP của bạn hiện tại!",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Room"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Tạo phòng thành công"
+                    },
+                    "400": {
+                        "description": "Đầu vào không hợp lệ"
+                    },
+                    "401": {
+                        "description": "Không được phép"
+                    }
+                }
+            }
+        },
+        "/room/update/{id}": {
+            "patch": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "tags": [
+                    "Room"
+                ],
+                "summary": "Cập nhật một phòng!",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "type": "string",
+                        "description": "ID của phòng cần được cập nhật"
+                    },
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "Nếu bạn không nhập trường <b>ipAddress</b>, nó sẽ tự động lấy địa chỉ IP của bạn hiện tại!",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Room"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Cập nhật phòng thành công"
+                    },
+                    "400": {
+                        "description": "Đầu vào không hợp lệ"
+                    },
+                    "401": {
+                        "description": "Không được phép"
+                    },
+                    "403": {
+                        "description": "Bạn không có quyền chỉnh sửa phòng này!"
+                    },
+                    "404": {
+                        "description": "Không tìm thấy phòng"
+                    }
+                }
+            }
+        },
+        "/room/delete/{id}": {
+            "delete": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "tags": [
+                    "Room"
+                ],
+                "summary": "Xóa phòng",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "type": "string",
+                        "description": "ID của phòng cần xóa"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Bạn đã xoá phòng này thành công!"
+                    },
+                    "400": {
+                        "description": "Đầu vào không hợp lệ"
+                    },
+                    "401": {
+                        "description": "Không được phép"
+                    },
+                    "403": {
+                        "description": "Bạn không có quyền xóa phòng này!"
+                    },
+                    "404": {
+                        "description": "Không tìm thấy phòng"
+                    }
+                }
+            }
+        },
+        "/room/invite/{roomId}": {
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "tags": [
+                    "Room"
+                ],
+                "summary": "Mời một người bạn vào phòng",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "roomId",
+                        "required": true,
+                        "type": "string",
+                        "description": "ID của phòng cần được cần được mời"
+                    },
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "id của bạn bè của bạn",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Invite"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Lời mời của bạn đã được gửi!"
+                    },
+                    "400": {
+                        "description": "Bạn không có quyền để tra cứu, hay thực hiện bất kì hành động nào khác của nhóm này!"
+                    },
+                    "401": {
+                        "description": "Không được phép"
+                    },
+                    "404": {
+                        "description": "<b>Không tìm thấy phòng</b><br><b>Email này không hợp lệ </b>hoặc<b> đã chưa đăng ký trước đây!</b>"
+                    },
+                    "429": {
+                        "description": "Quá nhiều yêu cầu, hãy thử lại sau 5 phút!"
+                    }
+                }
+            }
+        },
+        "/room/join/{roomId}": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "tags": [
+                    "Room"
+                ],
+                "summary": "Tham gia một phòng",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "roomId",
+                        "required": true,
+                        "type": "string",
+                        "description": "ID của phòng để tham gia"
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Bạn đã tham gia nhóm này thành công!"
+                    },
+                    "400": {
+                        "description": "Bạn đã tham gia nhóm này rồi!"
+                    },
+                    "401": {
+                        "description": "Không được phép"
+                    }
+                }
+            }
+        },
+        "/attendance/checkin/{roomId}": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "tags": [
+                    "Attendance"
+                ],
+                "summary": "Điểm danh lần 1",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "roomId",
+                        "required": true,
+                        "type": "string",
+                        "description": "Nhập ID của phòng để điểm danh"
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Bạn đã điểm danh thành công!!!"
+                    },
+                    "400": {
+                        "description": "<b>Cảnh báo: Bạn đang ở một nơi khác để điểm danh!</b><br><b>Bạn đã điểm danh ngày hôm nay rồi!</b><br><b>Bạn không thể điểm danh ở nhóm này!</b>"
+                    },
+                    "401": {
+                        "description": "Không được phép"
+                    }
+                }
+            }
+        },
+        "/attendance/checkout/{roomId}": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "tags": [
+                    "Attendance"
+                ],
+                "summary": "Điểm danh lần 2",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "roomId",
+                        "required": true,
+                        "type": "string",
+                        "description": "Nhập ID của phòng để điểm danh"
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Bạn đã kết thúc thời gian làm việc ngày hôm nay thành công!"
+                    },
+                    "400": {
+                        "description": "<b>Cảnh báo: Bạn đang ở một nơi khác để điểm danh!</b><br><b>Bạn chưa điểm danh lần 1 ngày hôm nay!</b><br><b>Bạn không thể điểm danh ở nhóm này!</b>"
+                    },
+                    "401": {
+                        "description": "Không được phép"
+                    }
+                }
+            }
+        },
+        "/statistic/paginate/{roomId}": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "tags": [
+                    "Statistic"
+                ],
+                "summary": "Phân trang | Thống kê danh sách những nhân viên đã điểm danh trong 1 phòng bất kỳ",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "roomId",
+                        "required": true,
+                        "type": "string",
+                        "description": "Nhập ID của phòng cần tìm"
+                    },
+                    {
+                        "in": "query",
+                        "name": "page",
+                        "required": false,
+                        "type": "integer",
+                        "description": "Số trang để truy xuất (Mặc định: 1)"
+                    },
+                    {
+                        "in": "query",
+                        "name": "limit",
+                        "required": false,
+                        "type": "integer",
+                        "description": "Giới hạn item mỗi trang (Mặc định: 20)"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Thành công!"
+                    },
+                    "400": {
+                        "description": "Bạn không có quyền để tra cứu, hay thực hiện bất kì hành động nào khác của nhóm này!"
+                    },
+                    "401": {
+                        "description": "Không được phép"
+                    }
+                }
+            }
+        },
+        "/statistic/{attendanceId}": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "tags": [
+                    "Statistic"
+                ],
+                "summary": "Lấy ID của một buổi điểm danh bất kỳ",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "attendanceId",
+                        "required": true,
+                        "type": "string",
+                        "description": "ID của buổi điểm danh"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Thành công!"
+                    },
+                    "401": {
+                        "description": "Không được phép"
+                    },
+                    "404": {
+                        "description": "Không tìm thấy buổi điểm danh nào như vậy!"
+                    }
+                }
+            }
+        },
+        "/statistic/find-by-day": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "tags": [
+                    "Statistic"
+                ],
+                "summary": "Tìm kiếm những buổi điểm danh theo ngày (Format: YYYY-MM-DDTHH:mm:ss)",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "key",
+                        "required": true,
+                        "type": "string",
+                        "description": "Ví dụ: <b>2023-07-10 (Ngày 10 tháng 07 năm 2023)</b><br><b>2023-07-10T03:57:44.949</b>"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Thành công!"
+                    },
+                    "401": {
+                        "description": "Không được phép"
+                    },
+                    "404": {
+                        "description": "Không tìm thấy buổi điểm danh nào như vậy!"
+                    }
+                }
+            }
+        },
+        "/statistic/find-by-user": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "tags": [
+                    "Statistic"
+                ],
+                "summary": "Tìm kiếm người dùng dựa trên ID của họ",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "key",
+                        "required": true,
+                        "type": "string",
+                        "description": "Nhập ID của người dùng để tra cứu số ngày điểm danh của họ!"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Thành công!"
+                    },
+                    "401": {
+                        "description": "Không được phép"
+                    },
+                    "404": {
+                        "description": "Người dùng này chưa từng tồn tại!"
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "Register": {
+            "type": "object",
+            "properties": {
+                "firstname": {
+                    "type": "string"
+                },
+                "lastname": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "firstname",
+                "lastname",
+                "email",
+                "password"
+            ]
+        },
+        "Login": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "email",
+                "password"
+            ]
+        },
+        "RefreshToken": {
+            "type": "object",
+            "properties": {
+                "refreshToken": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "refreshToken"
+            ]
+        },
+        "Room": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "Name of the room",
+                    "maxLength": 50,
+                    "example": "Room 14"
+                },
+                "ipAddress": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "Array of IP addresses",
+                    "example": [
+                        "1.55.233.220"
+                    ]
+                },
+                "dates": {
+                    "type": "array",
+                    "items": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "description": "Array of Date",
+                    "example": [
+                        [
+                            "2023-07-12T01:00:00.000Z",
+                            "2023-07-12T10:30:00.000Z"
+                        ],
+                        [
+                            "2023-07-13T01:00:00.000Z",
+                            "2023-07-13T10:30:00.000Z"
+                        ],
+                        [
+                            "2023-07-14T01:00:00.000Z",
+                            "2023-07-14T10:30:00.000Z"
+                        ],
+                        [
+                            "2023-07-17T01:00:00.000Z",
+                            "2023-07-17T10:30:00.000Z"
+                        ]
+                    ]
+                },
+                "participants": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "Array of participants",
+                    "example": [
+                        "649c014c18cbc9cbea81312c",
+                        "649c014c18cbc9cbea81310c"
+                    ]
+                }
+            }
+        },
+        "Invite": {
+            "type": "object",
+            "properties": {
+                "receiver": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "receiver"
+            ]
+        }
+    }
+}
