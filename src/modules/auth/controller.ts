@@ -3,11 +3,14 @@ import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import cache from 'memory-cache';
 
-import { SECRET_ROUNDS } from '../../common/constant/secret';
 import { User } from '../../models/user';
+
 import sendEmail from '../../services/sendEmail';
-import generateRandomString from '../../common/function/random';
+
+import { SECRET_ROUNDS } from '../../common/constant/secret';
 import { Message } from '../../common/constant/message';
+
+import generateRandomString from '../../common/function/random';
 import createResponse from '../../common/function/createResponse';
 
 export default class AuthController {
@@ -24,7 +27,7 @@ export default class AuthController {
         password: hashedPassword,
       }).save();
 
-      const code = await generateRandomString(10);
+      const code = generateRandomString(10);
 
       await sendEmail(user.email, Message.VerifyEmail, 'email-template', {
         name: user.firstname,

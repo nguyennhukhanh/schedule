@@ -8,8 +8,8 @@ import cors from 'cors';
 
 import Module from './modules';
 import JWTStrategy from './services/jwtStrategy';
-import connect from './common/database';
 import error from './middlewares/error';
+import connect from './common/database';
 import * as swaggerDocument from './common/docs/swagger.json';
 
 const app = express();

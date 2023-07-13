@@ -1,11 +1,14 @@
 import bcrypt from 'bcrypt';
 import dotenv from 'dotenv';
 
-import { User } from '../models/user';
-import { SECRET_ROUNDS } from '../common/constant/secret';
-import connect from '../common/database';
-import { Announce } from '../common/constant/announce';
 import Manager from './class/Manager';
+
+import { User } from '../models/user';
+
+import connect from '../common/database';
+
+import { SECRET_ROUNDS } from '../common/constant/secret';
+import { Announce } from '../common/constant/announce';
 
 dotenv.config();
 

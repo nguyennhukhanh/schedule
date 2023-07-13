@@ -3,10 +3,13 @@ import moment from 'moment-timezone';
 
 import { Attendance } from '../../models/attendance';
 import { Room } from '../../models/room';
-import { Time } from '../../models/time';
+
 import { Message } from '../../common/constant/message';
-import getLocationFromIpAddress from '../../services/location';
+
 import createResponse from '../../common/function/createResponse';
+import checkIpAddress from '../../common/function/checkIpAddress';
+import getDates from '../../common/function/getDates';
+import getCurrentDate from '../../common/function/getCurrentDate';
 
 export default class AttendanceController {
   async checkin(
@@ -20,7 +23,7 @@ export default class AttendanceController {
       let isLateArrival: boolean;
 
       const room = await Room.findById(roomId);
-      const checkIp = await checkIpAddress(room);
+      const checkIp = checkIpAddress(req.ip, room);
       if (!checkIp) {
         return createResponse(res, 400, false, Message.checkIpAddress);
       }
@@ -38,10 +41,10 @@ export default class AttendanceController {
       }
       const startTime = currentDate[0];
 
-      const { startOrFinishTime, checkInByDay, time } = await getDates();
+      const { startOrFinishTime, checkInByDay, time } = getDates();
 
       const formattedDate = moment(startTime)
-        .subtract(parseInt(process.env.SG), 'hours') // Trừ đi vì nó vẫn lấy giờ trên múi giờ vn suy ra từ múi giờ UTC
+        .subtract(parseInt(process.env.SG), 'hours') // Trừ đi vì nó vẫn lấy giờ trên múi giờ VN suy ra từ múi giờ UTC
         .format('HH:mm:ss');
       if (time <= formattedDate) {
         isLateArrival = false;
@@ -94,7 +97,7 @@ export default class AttendanceController {
       let isLeaveEarly: boolean;
 
       const room = await Room.findById(roomId);
-      const checkIp = await checkIpAddress(room);
+      const checkIp = checkIpAddress(req.ip, room);
       if (!checkIp) {
         return createResponse(res, 400, false, Message.checkIpAddress);
       }
@@ -112,10 +115,10 @@ export default class AttendanceController {
       }
       const endTime = currentDate[1];
 
-      const { startOrFinishTime, checkInByDay, time } = await getDates();
+      const { startOrFinishTime, checkInByDay, time } = getDates();
 
       const formattedDate = moment(endTime)
-        .subtract(parseInt(process.env.SG), 'hours') // Trừ đi vì nó vẫn lấy giờ trên múi giờ vn suy ra từ múi giờ UTC
+        .subtract(parseInt(process.env.SG), 'hours') // Trừ đi vì nó vẫn lấy giờ trên múi giờ VN suy ra từ múi giờ UTC
         .format('HH:mm:ss');
       if (time >= formattedDate) {
         isLeaveEarly = false;
@@ -157,37 +160,4 @@ export default class AttendanceController {
       next(error);
     }
   }
-}
-
-async function getCurrentDate(roomId: object): Promise<void | object> {
-  const timeLine = await Time.findOne({ room: roomId });
-  const currentArrDate = timeLine.dates;
-  const result = currentArrDate.find((dateRange) => {
-    const startDate = dateRange[0];
-    return new Date(startDate).toDateString() === new Date().toDateString();
-  });
-
-  return result;
-}
-
-async function getDates(): Promise<{
-  startOrFinishTime: Date;
-  checkInByDay: string;
-  time: string;
-}> {
-  const date = new Date();
-  const result = moment.utc(date);
-  return {
-    startOrFinishTime: result.toDate(),
-    checkInByDay: result.format('YYYY-MM-DD'),
-    time: result.format('HH:mm:ss'),
-  };
-}
-
-async function checkIpAddress(room: any): Promise<boolean> {
-  const location = await getLocationFromIpAddress();
-  const ipAddress = room.ipAddress.some(
-    (element: string) => element == location.ip,
-  );
-  return ipAddress;
 }

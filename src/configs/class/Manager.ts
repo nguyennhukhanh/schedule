@@ -1,6 +1,6 @@
-import UserInterface from '../../common/interface/user';
+import IUser from '../../common/interface/user.interface';
 
-export default class Manager implements UserInterface {
+export default class Manager implements IUser {
   constructor(
     public firstname: string,
     public lastname: string,

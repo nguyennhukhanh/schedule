@@ -1,6 +1,7 @@
 import express from 'express';
 
 import AuthController from './controller';
+
 import LoginSchema from './validations/login';
 import registerSchema from './validations/register';
 

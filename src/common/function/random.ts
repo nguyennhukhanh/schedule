@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 import cache from 'memory-cache';
 
-export default async function generateRandomString(length: number) {
+export default function generateRandomString(length: number) {
   const characters =
     'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   let randomString = '';

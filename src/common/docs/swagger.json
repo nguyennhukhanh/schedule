@@ -3,7 +3,7 @@
     "info": {
         "title": "Schedule API",
         "version": "1.0.0",
-        "description": "Lập lịch điểm danh cho công ty! 💦 <br> Xem ảnh của người dùng: <strong>domain-name/static/files/image-name</strong>. Ví dụ: <a href='http://localhost:5555/static/files/avatar.jpg'>nhukhanh.dev/static/files/image.jpg</a>. Lưu ý: <strong>image.jpg</strong> là ảnh người người dùng có trường là <strong>avatar</strong> ^^ "
+        "description": "Lập lịch điểm danh cho công ty! 💦 <br> Xem ảnh của người dùng: <strong>domain-name/static/files/image-name</strong>. Ví dụ: <a href='http://localhost:5555/static/files/avatar.jpg'>nhukhanh.dev/static/files/image.jpg</a>. Lưu ý: <strong>image.jpg</strong> là ảnh của người dùng có trường là <strong>avatar</strong> ^^ "
     },
     "produces": [
         "application/json"

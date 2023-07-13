@@ -2,11 +2,15 @@ import { NextFunction, Request, Response } from 'express';
 import cache from 'memory-cache';
 import jwt from 'jsonwebtoken';
 
-import { signToken } from '../auth/controller';
 import { User } from '../../models/user';
+
+import { signToken } from '../auth/controller';
+
 import sendEmail from '../../services/sendEmail';
-import generateRandomString from '../../common/function/random';
+
 import { Message } from '../../common/constant/message';
+
+import generateRandomString from '../../common/function/random';
 import createResponse from '../../common/function/createResponse';
 
 export default class VerifyController {
@@ -23,7 +27,7 @@ export default class VerifyController {
         return createResponse(res, 404, false, Message.EmailNotFound);
       }
 
-      const code = await generateRandomString(10);
+      const code = generateRandomString(10);
 
       await sendEmail(
         userExists.email,

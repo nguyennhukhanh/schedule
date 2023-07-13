@@ -1,6 +1,7 @@
 import express from 'express';
 
 import RoomController from './controller';
+
 import createRoomSchema from './validations/create';
 import updateRoomSchema from './validations/update';
 

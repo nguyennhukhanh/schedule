@@ -2,9 +2,12 @@ import { NextFunction, Request, Response } from 'express';
 import bcrypt from 'bcrypt';
 
 import { User } from '../../models/user';
+
+import deleteFile from '../../services/deleteFile';
+
 import { SECRET_ROUNDS } from '../../common/constant/secret';
 import { Message } from '../../common/constant/message';
-import deleteFile from '../../services/deleteFile';
+
 import createResponse from '../../common/function/createResponse';
 
 export default class ProfileController {

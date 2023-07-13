@@ -3,10 +3,12 @@ import cache from 'memory-cache';
 
 import { Room } from '../../models/room';
 import { Time } from '../../models/time';
-import getLocationFromIpAddress from '../../services/location';
-import { Message } from '../../common/constant/message';
-import sendEmail from '../../services/sendEmail';
 import { User } from '../../models/user';
+
+import sendEmail from '../../services/sendEmail';
+
+import { Message } from '../../common/constant/message';
+
 import createResponse from '../../common/function/createResponse';
 import incompetent from '../../common/function/incompetent';
 
@@ -94,12 +96,11 @@ export default class RoomController {
     next: NextFunction,
   ): Promise<void> {
     try {
-      // const location = req.ip;
-      const location = await getLocationFromIpAddress();
+      const location = req.ip;
 
       const room = new Room({
         ...req.body,
-        ipAddress: [location.ip],
+        ipAddress: [location],
         owner: req.user.id,
       });
       await room.save();

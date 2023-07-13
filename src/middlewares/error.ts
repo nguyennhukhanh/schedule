@@ -14,7 +14,7 @@ export default function error(
   switch (error.name) {
     case 'CastError':
       statusCode = 400;
-      message = 'ID không hợp lệ';
+      message = 'Invalid ID';
       break;
     case 'ValidationError':
       statusCode = 400;
