@@ -36,8 +36,6 @@ MAILER_PORT=
 
 VERIFICATION_LINK=
 
-SG=
-
 ```
 
 # Dockerfile
@@ -70,7 +68,6 @@ ENV MAILER_HOST=
 ENV MAILER_PORT=
 
 ENV VERIFICATION_LINK=
-ENV SG=7
 
 RUN yarn install \
     && yarn build
