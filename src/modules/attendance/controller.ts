@@ -43,9 +43,7 @@ export default class AttendanceController {
 
       const { startOrFinishTime, checkInByDay, time } = getDates();
 
-      const formattedDate = moment(startTime)
-        .subtract(parseInt(process.env.SG), 'hours') // Trừ đi vì nó vẫn lấy giờ trên múi giờ VN suy ra từ múi giờ UTC
-        .format('HH:mm:ss');
+      const formattedDate = moment(startTime).format('HH:mm:ss');
       if (time <= formattedDate) {
         isLateArrival = false;
       } else {
@@ -117,9 +115,7 @@ export default class AttendanceController {
 
       const { startOrFinishTime, checkInByDay, time } = getDates();
 
-      const formattedDate = moment(endTime)
-        .subtract(parseInt(process.env.SG), 'hours') // Trừ đi vì nó vẫn lấy giờ trên múi giờ VN suy ra từ múi giờ UTC
-        .format('HH:mm:ss');
+      const formattedDate = moment(endTime).format('HH:mm:ss');
       if (time >= formattedDate) {
         isLeaveEarly = false;
       } else {
