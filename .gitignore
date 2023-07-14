@@ -1,6 +1,6 @@
 node_modules
 .env
-public
+public/files/*
 dist
 Dockerfile
 .vscode
