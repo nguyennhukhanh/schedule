@@ -715,7 +715,7 @@
                         "name": "key",
                         "required": true,
                         "type": "string",
-                        "description": "Ví dụ: <b>2023-07-10 (Ngày 10 tháng 07 năm 2023)</b><br><b>2023-07-10T03:57:44.949</b>"
+                        "description": "Ví dụ: <b>2023-07-10 (Ngày 10 tháng 07 năm 2023) </b>hoặc<b> 2023-07-10T03:57:44.949</b>"
                     }
                 ],
                 "responses": {
