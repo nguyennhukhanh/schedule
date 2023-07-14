@@ -10,6 +10,7 @@ import Module from './modules';
 import JWTStrategy from './services/jwtStrategy';
 import error from './middlewares/error';
 import connect from './common/database';
+import './common/function/createDirs';
 import * as swaggerDocument from './common/docs/swagger.json';
 
 const app = express();
