@@ -258,12 +258,6 @@
                         "name": "avatar",
                         "type": "file",
                         "description": "Ảnh của người dùng"
-                    },
-                    {
-                        "in": "formData",
-                        "name": "password",
-                        "type": "string",
-                        "description": "Mật khẩu của người dùng"
                     }
                 ],
                 "responses": {
@@ -272,6 +266,44 @@
                     },
                     "400": {
                         "description": "Đầu vào không hợp lệ"
+                    },
+                    "401": {
+                        "description": "Không được phép"
+                    }
+                }
+            }
+        },
+        "/profile/password": {
+            "patch": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "tags": [
+                    "Profile"
+                ],
+                "summary": "Cập nhật mật khẩu của người dùng hiện tại",
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "currentPassword",
+                        "type": "string",
+                        "description": "Mật khẩu cũ của người dùng"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "newPassword",
+                        "type": "string",
+                        "description": "Mật khẩu mới của người dùng"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Thông tin của bạn đã được cập nhật"
+                    },
+                    "400": {
+                        "description": "Bạn đã nhập sai mật khẩu!"
                     },
                     "401": {
                         "description": "Không được phép"
