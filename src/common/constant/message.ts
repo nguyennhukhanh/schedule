@@ -25,6 +25,7 @@ export enum Message {
 
   // Profile
   MyProfile = 'Đây là thông tin tài khoản của bạn!',
+  ErrorPassword = 'Bạn đã nhập sai mật khẩu!',
   ProfileUpdated = 'Thông tin của bạn đã được cập nhật',
   DeletedAccount = 'Tài khoản đã được xóa thành công!!!',
 

@@ -10,7 +10,6 @@ const userSchema = Yup.object({
   email: Yup.string()
     .email('Please enter a valid email.')
     .max(50, 'Email must be less than 50 characters.'),
-  password: Yup.string().min(6, 'Password must be at least 6 characters.'),
 });
 
 export default userSchema;

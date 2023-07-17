@@ -21,13 +21,7 @@ export default class ProfileController {
     next: NextFunction,
   ): Promise<void> {
     try {
-      const { firstname, lastname, email, password } = req.body;
-
-      let hashedPassword = undefined;
-
-      if (password) {
-        hashedPassword = await bcrypt.hash(password, SECRET_ROUNDS);
-      }
+      const { firstname, lastname, email } = req.body;
 
       const avatarPath = req.file ? req.file.filename : undefined;
 
@@ -44,6 +38,34 @@ export default class ProfileController {
         lastname,
         email,
         avatar: avatarPath,
+      });
+
+      return createResponse(res, 200, true, Message.ProfileUpdated);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async editPassword(
+    req: Request | any,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    try {
+      const { currentPassword, newPassword } = req.body;
+
+      const user = await User.findById(req.user.id);
+
+      const match = await bcrypt.compare(currentPassword, user.password);
+      if (!match) return createResponse(res, 400, false, Message.ErrorPassword);
+
+      let hashedPassword = undefined;
+
+      if (newPassword) {
+        hashedPassword = await bcrypt.hash(newPassword, SECRET_ROUNDS);
+      }
+
+      await user.updateOne({
         password: hashedPassword,
       });
 
