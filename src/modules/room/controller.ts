@@ -216,7 +216,7 @@ export default class RoomController {
         return createResponse(res, 404, false, Message.RoomNotFound);
       }
 
-      const userExists = await User.findById(receiver);
+      const userExists = await User.findOne({ email: receiver });
       if (!userExists) {
         return createResponse(res, 404, false, Message.InvalidEmail);
       }
