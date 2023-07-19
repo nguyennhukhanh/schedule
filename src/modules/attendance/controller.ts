@@ -20,7 +20,7 @@ export default class AttendanceController {
     try {
       const roomId = req.params.roomId;
       const userId = req.user.id;
-      let isLateArrival: boolean;
+      let timePeriodStarts: number;
 
       const room = await Room.findById(roomId);
       const checkIp = checkIpAddress(req.ip, room);
@@ -44,10 +44,19 @@ export default class AttendanceController {
       const { startOrFinishTime, checkInByDay, time } = getDates();
 
       const formattedDate = moment(startTime).format('HH:mm:ss');
+
+      const timeParts = time.split(':').map(Number);
+      const formattedDateParts = formattedDate.split(':').map(Number);
+      const timeInMinutes =
+        timeParts[0] * 60 + timeParts[1] + timeParts[2] / 60;
+      const formattedDateInMinutes =
+        formattedDateParts[0] * 60 +
+        formattedDateParts[1] +
+        formattedDateParts[2] / 60;
       if (time <= formattedDate) {
-        isLateArrival = false;
+        timePeriodStarts = timeInMinutes - formattedDateInMinutes; // Đi sớm (> 0)
       } else {
-        isLateArrival = true;
+        timePeriodStarts = timeInMinutes - formattedDateInMinutes; // Đi trễ (< 0)
       }
 
       const startDate = new Date(checkInByDay);
@@ -69,14 +78,14 @@ export default class AttendanceController {
 
       const attendance = await new Attendance({
         checkIn: startOrFinishTime,
-        isLateArrival,
+        timePeriodStarts,
         room: roomId,
         user: userId,
       }).save();
 
       return createResponse(res, 201, true, Message.CheckInSuccessfully, {
         checkIn: startOrFinishTime,
-        isLateArrival: attendance.isLateArrival,
+        timePeriodStarts: attendance.timePeriodStarts,
       });
     } catch (error) {
       next(error);
@@ -92,7 +101,7 @@ export default class AttendanceController {
       const roomId = req.params.roomId;
       const userId = req.user.id;
 
-      let isLeaveEarly: boolean;
+      let timePeriodEnds: number;
 
       const room = await Room.findById(roomId);
       const checkIp = checkIpAddress(req.ip, room);
@@ -116,10 +125,19 @@ export default class AttendanceController {
       const { startOrFinishTime, checkInByDay, time } = getDates();
 
       const formattedDate = moment(endTime).format('HH:mm:ss');
+
+      const timeParts = time.split(':').map(Number);
+      const formattedDateParts = formattedDate.split(':').map(Number);
+      const timeInMinutes =
+        timeParts[0] * 60 + timeParts[1] + timeParts[2] / 60;
+      const formattedDateInMinutes =
+        formattedDateParts[0] * 60 +
+        formattedDateParts[1] +
+        formattedDateParts[2] / 60;
       if (time >= formattedDate) {
-        isLeaveEarly = false;
+        timePeriodEnds = timeInMinutes - formattedDateInMinutes; // Về trễ (> 0)
       } else {
-        isLeaveEarly = true;
+        timePeriodEnds = timeInMinutes - formattedDateInMinutes; // Về sớm (< 0)
       }
 
       const startDate = new Date(checkInByDay);
@@ -137,7 +155,7 @@ export default class AttendanceController {
         },
         {
           checkOut: startOrFinishTime,
-          isLeaveEarly,
+          timePeriodEnds,
         },
         {
           new: true,
@@ -149,7 +167,7 @@ export default class AttendanceController {
       } else {
         return createResponse(res, 201, true, Message.CheckOutSuccessfully, {
           checkOut: startOrFinishTime,
-          isLeaveEarly: attendanceExecuted.isLeaveEarly,
+          timePeriodEnds: attendanceExecuted.timePeriodEnds,
         });
       }
     } catch (error) {
