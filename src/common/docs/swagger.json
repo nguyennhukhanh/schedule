@@ -39,6 +39,10 @@
         {
             "name": "Statistic",
             "description": "Statistic"
+        },
+        {
+            "name": "Streak",
+            "description": "Streak"
         }
     ],
     "paths": {
@@ -64,7 +68,7 @@
                         "description": "Chúng tôi đã gửi một thông báo đến Email của bạn. Hãy kiểm tra chúng ngay bây giờ!"
                     },
                     "400": {
-                        "description": "Đâu vào không hợp lệ!"
+                        "description": "Đầu vào không hợp lệ"
                     },
                     "409": {
                         "description": "Có vẻ như trước đây Email này đã được đăng ký. Vui lòng sử dụng một Email khác!"
@@ -792,6 +796,107 @@
                     },
                     "404": {
                         "description": "Người dùng này chưa từng tồn tại!"
+                    }
+                }
+            }
+        },
+        "/streak": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "tags": [
+                    "Streak"
+                ],
+                "summary": "Phân trang | Tìm kiếm người dùng theo RoomID và lọc theo UserID, Date, Options",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "page",
+                        "required": false,
+                        "type": "integer",
+                        "description": "Số trang để truy xuất (Mặc định: 1)"
+                    },
+                    {
+                        "in": "query",
+                        "name": "limit",
+                        "required": false,
+                        "type": "integer",
+                        "description": "Giới hạn item mỗi trang (Mặc định: 20)"
+                    },
+                    {
+                        "in": "query",
+                        "name": "roomId",
+                        "required": true,
+                        "type": "string",
+                        "description": "ID của phòng mà bạn muốn tìm kiếm"
+                    },
+                    {
+                        "in": "query",
+                        "name": "userId",
+                        "required": false,
+                        "type": "string",
+                        "description": "Nếu bạn bỏ qua trường này, chúng tôi sẽ tìm kiếm tất cả người dùng"
+                    },
+                    {
+                        "in": "query",
+                        "name": "date",
+                        "required": false,
+                        "type": "string",
+                        "description": "Nếu bạn bỏ qua trường này, chúng tôi lấy tất cả các ngày.<b>Ví dụ: 2023-07-17</b>"
+                    },
+                    {
+                        "in": "query",
+                        "name": "options",
+                        "required": false,
+                        "type": "string",
+                        "description": "Nếu bạn bỏ qua trường này, chúng tôi lấy ngày của trường <b>date</b>.<br>Nếu <b>options = year</b> sẽ lấy theo năm, nếu <b>options = month</b> sẽ lấy theo tháng!"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Thành công!"
+                    },
+                    "400": {
+                        "description": "Đầu vào không hợp lệ"
+                    },
+                    "401": {
+                        "description": "Không được phép"
+                    }
+                }
+            }
+        },
+        "/streak/statistic": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "tags": [
+                    "Streak"
+                ],
+                "summary": "Thống kê nhân viên dành thời gian cho công việc nhiều nhất và nhân viên lãng phí thời gian cho công việc nhất!",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "roomId",
+                        "required": true,
+                        "type": "string",
+                        "description": "ID của phòng mà bạn muốn tìm kiếm"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Thành công!"
+                    },
+                    "400": {
+                        "description": "Đầu vào không hợp lệ"
+                    },
+                    "401": {
+                        "description": "Không được phép"
                     }
                 }
             }
