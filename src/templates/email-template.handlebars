@@ -8,7 +8,11 @@
 <body>
   <h1>Welcome, {{name}}!</h1>
   <p>Thank you for joining Schedule App. Please click the link below to verify your account:</p>
+  {{#if code}}
+  <h2>Code: <b>{{code}}</b></h2>
+  {{else}}
   <a href="{{verificationLink}}">Verify your account</a>
+  {{/if}}
 </body>
 
 </html>
