@@ -529,7 +529,7 @@
                     {
                         "in": "body",
                         "name": "body",
-                        "description": "id của bạn bè của bạn",
+                        "description": "ID của bạn bè của bạn",
                         "required": true,
                         "schema": {
                             "$ref": "#/definitions/Invite"
