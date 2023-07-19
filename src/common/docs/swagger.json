@@ -744,11 +744,18 @@
                 "tags": [
                     "Statistic"
                 ],
-                "summary": "Tìm kiếm những buổi điểm danh theo ngày (Format: YYYY-MM-DDTHH:mm:ss)",
+                "summary": "Tìm kiếm những buổi điểm danh theo ngày (Format: YYYY-MM-DDTHH:mm:ss) của 1 phòng bất kỳ",
                 "parameters": [
                     {
                         "in": "query",
-                        "name": "key",
+                        "name": "roomId",
+                        "required": true,
+                        "type": "string",
+                        "description": "ID của phòng mà bạn muốn tìm kiếm"
+                    },
+                    {
+                        "in": "query",
+                        "name": "date",
                         "required": true,
                         "type": "string",
                         "description": "Ví dụ: <b>2023-07-10 (Ngày 10 tháng 07 năm 2023) </b>hoặc<b> 2023-07-10T03:57:44.949</b>"
@@ -777,14 +784,21 @@
                 "tags": [
                     "Statistic"
                 ],
-                "summary": "Tìm kiếm người dùng dựa trên ID của họ",
+                "summary": "Tìm kiếm người dùng dựa trên ID của họ ở một phòng bất kỳ",
                 "parameters": [
                     {
                         "in": "query",
-                        "name": "key",
+                        "name": "userId",
                         "required": true,
                         "type": "string",
                         "description": "Nhập ID của người dùng để tra cứu số ngày điểm danh của họ!"
+                    },
+                    {
+                        "in": "query",
+                        "name": "roomId",
+                        "required": true,
+                        "type": "string",
+                        "description": "ID của phòng mà bạn muốn tìm kiếm"
                     }
                 ],
                 "responses": {
@@ -810,7 +824,7 @@
                 "tags": [
                     "Streak"
                 ],
-                "summary": "Phân trang | Tìm kiếm người dùng theo RoomID và lọc theo UserID, Date, Options",
+                "summary": "Phân trang | Lấy thông tin của các bảng ghi dựa theo RoomID và lọc theo UserID, Date, Options",
                 "parameters": [
                     {
                         "in": "query",
@@ -878,7 +892,7 @@
                 "tags": [
                     "Streak"
                 ],
-                "summary": "Thống kê nhân viên dành thời gian cho công việc nhiều nhất và nhân viên lãng phí thời gian cho công việc nhất!",
+                "summary": "Thống kê nhân viên dành thời gian cho công việc nhiều nhất và nhân viên lãng phí thời gian cho công việc nhiều nhất!",
                 "parameters": [
                     {
                         "in": "query",

@@ -79,14 +79,15 @@ export default class StatisticController {
     res: Response,
     next: NextFunction,
   ): Promise<void> {
-    const key = req.query.key;
-    const startDate = new Date(key);
+    const { date, roomId } = req.query;
+    const startDate = new Date(date);
     const endDate = new Date(startDate);
     endDate.setDate(startDate.getDate() + 1);
 
     try {
       const attendances = await Attendance.find({
         checkIn: { $gte: startDate, $lt: endDate },
+        room: roomId,
       })
         .populate('user', ['firstname', 'lastname', 'email', 'avatar'], 'User')
         .populate(
@@ -122,10 +123,11 @@ export default class StatisticController {
     next: NextFunction,
   ): Promise<void> {
     try {
-      const { key } = req.query;
+      const { userId, roomId } = req.query;
 
       const attendances = await Attendance.find({
-        user: key,
+        user: userId,
+        room: roomId,
       })
         .populate('user', ['firstname', 'lastname', 'email', 'avatar'], 'User')
         .populate(
