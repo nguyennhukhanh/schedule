@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import cache from 'memory-cache';
 import jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
 
 import { User } from '../../models/user';
 
@@ -9,6 +10,7 @@ import { signToken } from '../auth/controller';
 import sendEmail from '../../services/sendEmail';
 
 import { Message } from '../../common/constant/message';
+import { SECRET_ROUNDS } from '../../common/constant/secret';
 
 import generateRandomString from '../../common/function/random';
 import createResponse from '../../common/function/createResponse';
@@ -36,6 +38,7 @@ export default class VerifyController {
         {
           name: userExists.firstname,
           verificationLink: `${process.env.VERIFICATION_LINK}/${code}`,
+          code,
         },
       );
 
@@ -72,6 +75,46 @@ export default class VerifyController {
           const userExists = await User.findOneAndUpdate(
             { email: emailExists },
             { isVerify: true },
+          );
+
+          const token = await signToken(res, userExists.id, userExists.email);
+          return token;
+        } else {
+          return createResponse(res, 404, false, Message.CodeNotVerified);
+        }
+      }
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async confirmPassword(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<object | void> {
+    try {
+      const { code } = req.params;
+      const { password } = req.body;
+
+      const secretCodeExists = cache.get('secret-code');
+      const emailExists = cache.get('email');
+
+      if (!secretCodeExists) {
+        return createResponse(res, 404, false, Message.CodeHasExpired);
+      } else {
+        const verifyCode: any = jwt.verify(
+          secretCodeExists,
+          process.env.JWT_SECRET,
+        );
+        if (verifyCode.randomString === code) {
+          cache.del('secret-code');
+          cache.del('email');
+
+          const hashedPassword = await bcrypt.hash(password, SECRET_ROUNDS);
+          const userExists = await User.findOneAndUpdate(
+            { email: emailExists },
+            { password: hashedPassword },
           );
 
           const token = await signToken(res, userExists.id, userExists.email);

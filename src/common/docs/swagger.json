@@ -165,7 +165,7 @@
         },
         "/verify/{code}": {
             "get": {
-                "summary": "Xác minh mã",
+                "summary": "Xác minh mã & Xác minh người dùng",
                 "tags": [
                     "Verify"
                 ],
@@ -175,6 +175,40 @@
                         "name": "code",
                         "required": true,
                         "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Bạn đã đăng nhập thành công!"
+                    },
+                    "404": {
+                        "description": "<b>Mã chưa được xác minh</b><br><b>Hoặc mã đã hết hạn!</b>"
+                    }
+                }
+            },
+            "post": {
+                "summary": "Xác minh mã & Đổi mật khẩu mới!",
+                "tags": [
+                    "Verify"
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "code",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "Người dùng khôi phục mật khẩu qua Email thì nhập trường này để thay đổi mật khẩu mới!",
+                        "required": true,
+                        "type": "object",
+                        "properties": {
+                            "password": {
+                                "type": "string"
+                            }
+                        }
                     }
                 ],
                 "responses": {
